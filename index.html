@@ -38,8 +38,8 @@
         <button type="button" class="btn btn-primary download-from-url">Download from URL</button>
       </div>
       <div class="form-group col-md-2">
-        <label for="upload-file">Upload a JSON file</label>
-        <input type="file" class = "form-control-file" id="upload-file"></input>
+        <label for="upload-file">Upload JSON files</label>
+        <input type="file" class = "form-control-file" id="upload-file" multiple></input>
       </div>
 
     </form>
@@ -55,18 +55,22 @@
         generate_prwm_from_json(document.querySelector('#input-url').value);
       }      
     });
+      
     $('#upload-file').on('change',function(evt){
-      let file = evt.target.files[0];
-      if(file.type.match('\.json')){
-        let reader = new FileReader();
-        let filename = file.name;
-        reader.onload = (function(theFile){
-          return function(e){
-            generate_prwm_from_json_object(JSON.parse(e.target.result),filename);  
-          };
-        })(file);
-        reader.readAsText(file);
-      }
+      let files = Array.from(evt.target.files);
+      console.log(files);
+      files.forEach(function(file){
+        if(file.type.match('\.json')){
+          let reader = new FileReader();
+          let filename = file.name;
+          reader.onload = (function(theFile){
+            return function(e){
+              generate_prwm_from_json_object(JSON.parse(e.target.result),filename);  
+            };
+          })(file);
+          reader.readAsText(file);
+        }
+      });
     });
       
     
